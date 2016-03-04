@@ -1,0 +1,46 @@
+@require "../../../css/variables"
+@require "../../../css/typography"
+
+@import "jeet"
+
+
+html.admin {
+    #module_layoutmanager {
+        table {
+            border-collapse collapse
+
+            tbody {
+                td {
+                    padding 10px
+                    border 2px solid white
+                    rem 16px
+                    font-weight 400
+
+                    &.name {
+                        min-width 337px
+                        padding-right 20px
+
+                        &.ui-draggable {
+                            background rgba(255, 255, 255, 0.2)
+                            cursor move
+                        }
+
+                        span.currentlyDisplaying {
+                            float right
+                        }
+                    }
+
+                    &.actions {
+                        min-width 350px
+
+                        a {
+                            display inline-block
+                            margin-right 16px
+                            color white
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

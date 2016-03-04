@@ -1,0 +1,23 @@
+<div oc-lazy-load="['modules/quotes/css/quotes.css']">
+    <div id="module_quotes">
+
+        <!-- loading -->
+        <div ng-if="ultimirror.moduleInstances[moduleKey].showLoading" class="loading">
+            <div ng-include="'templates/loading_emoticon.html'"></div>
+        </div>
+
+        <!-- admin -->
+        <div data-display="admin">
+            <div ng-include="'templates/moduleConfig_fields.html'"></div>
+        </div>
+
+        <!-- mirror -->
+        <div ng-if="ultimirror.moduleInstances[moduleKey].data && !ultimirror.moduleInstances[moduleKey].showLoading" data-display="mirror">
+            <figure>
+                <blockquote ng-bind-html="ultimirror.moduleInstances[moduleKey].data.text"></blockquote>
+                <figcaption ng-if="ultimirror.moduleInstances[moduleKey].data.author" ng-bind-html="ultimirror.moduleInstances[moduleKey].data.author"></figcaption>
+            </figure>
+        </div>
+
+    </div>
+</div>

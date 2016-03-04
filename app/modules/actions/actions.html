@@ -1,0 +1,32 @@
+<div oc-lazy-load="['modules/actions/js/actions.js', 'modules/actions/css/actions.css']">
+    <div id="module_actions" ng-controller="ActionsCtrl">
+
+        <!-- admin -->
+        <div data-display="admin">
+            <div class="error" ng-if="ultimirror.moduleInstances[moduleKey].data.error">
+                {{ ultimirror.moduleInstances[moduleKey].data.message }}
+            </div>
+
+            <ul>
+                <li>
+                    <button id="module_actions-update" ng-click="actions_buttonAction('update')">
+                        Update
+                    </button>
+                </li>
+
+                <li>
+                    <button id="module_actions-restart" ng-click="actions_buttonAction('restart')">
+                        Restart
+                    </button>
+                </li>
+
+                <li>
+                    <button id="module_actions-shutdown" ng-click="actions_buttonAction('shutdown')">
+                        Shutdown
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>

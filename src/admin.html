@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="Ultimirror" ng-controller="UltimirrorCtrl" class="admin context_{{ ultimirror.context }} edgePadding_{{ ultimirror.config.edgePadding }}" ng-class="{ 'debug': ultimirror.config.debug }">
+    <head>
+        <meta charset="UTF-8" />
+        <title ng-bind-template="{{ ultimirror.sys.name }} Configuration"></title>
+
+        <link href="/favicon.ico" rel="shortcut icon" />
+
+        <script src="/js/socketio.js"></script>
+
+        <script src="/js/jquery.js"></script>
+        <script src="/js/moment.js"></script>
+        <script src="/js/moment-timezone.js"></script>
+
+        <script src="/js/angular.js"></script>
+        <script src="/js/angular-sanitize.js"></script>
+        <script src="/js/angular-animate.js"></script>
+        <script src="/js/angular-oclazyload.js"></script>
+        <script src="/js/angular-moment.js"></script>
+
+        <script src="/js/admin.js"></script>
+
+        <link href="/css/admin.css" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Baumans|Orbitron:400,700,900|Righteous|Viga|Lobster|Bubblegum+Sans|Fontdiner+Swanky|Montserrat+Alternates:400,700|Carter+One" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <h1>
+            <span>
+                {{ ultimirror.sys.name }}
+            </span>
+
+            <nav ng-if="ultimirror.layout && (ultimirror.layout.admin == 'admin/admin')" class="animate lightSpeedInOutHoriz">
+                <module type="actions"></module>
+            </nav>
+
+            <nav ng-if="ultimirror.layout && (ultimirror.layout.admin != 'admin/admin')" class="animate lightSpeedInOutHoriz">
+                <ul>
+                    <li ng-if="ultimirror.layout.mirror != ultimirror.layout.admin">
+                        <button ng-click="changeCurrentlyDisplaying(ultimirror.layout.admin)" href="#" class="changeCurrentlyDisplaying">
+                            Show on mirror now
+                        </button>
+                    </li>
+
+                    <li>
+                        <button ng-click="changeCurrentlyDisplaying('admin/admin', true)" class="back">
+                            Back to main screen
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </h1>
+
+        <layout admin="true"></layout>
+    </body>
+</html>

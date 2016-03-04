@@ -1,0 +1,9 @@
+{
+  "default": {
+    "location":         "Birmingham,uk",
+    "theme":            "current_hybrid",
+    "showLocation":     true,
+    "temperatureUnits": "<system>",
+    "apiKey":           "41a4c2a6b97a096c0502d39a1326e028"
+  }
+}

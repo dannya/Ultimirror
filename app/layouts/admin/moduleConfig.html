@@ -1,0 +1,16 @@
+<h2>
+    {{ ultimirror.moduleInstances[moduleKey].config.moduleName }}
+
+    <span class="id" title="Module ID (set in layout HTML file)">
+        {{ ultimirror.moduleInstances[moduleKey].config.moduleId }}
+    </span>
+</h2>
+
+<dl ng-repeat="item in ultimirror.moduleInstances[moduleKey].defaultConfig">
+    <dt>
+        {{ item.name }}
+    </dt>
+    <dd>
+        <div ng-include="'templates/moduleConfig_fields.html'"></div>
+    </dd>
+</dl>

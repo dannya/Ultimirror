@@ -1,0 +1,24 @@
+<div class="animate bounceInOutVert">
+    <aside>
+        <span>Configure this mirror @ </span><a href="http://{{ ultimirror.moduleInstances['system_default'].data.ip_display }}" target="_blank">http://{{ ultimirror.moduleInstances['system_default'].data.ip_display }}</a>
+    </aside>
+
+    <svg viewBox="0 0 600 300">
+        <radialGradient id="gr-radial" cx="50%" cy="50%" r="70%">
+            <animate attributeName="r" values="0%; 150%; 100%; 0%" dur="{{ ultimirror.moduleInstances['system_default'].config.showIntro + 0.5 }}s" repeatCount="indefinite" />
+
+            <stop stop-color="#ffffff" offset="0">
+                <animate attributeName="stop-color" values="#333333; #ffffff; #ffffff; #333333" dur="5s" repeatCount="indefinite" />
+            </stop>
+            <stop stop-color="rgba(55, 55, 55, 0)" offset="100%"/>
+        </radialGradient>
+
+        <text text-anchor="middle" x="50%" y="50%" dy=".35em">
+            {{ ultimirror.sys.name }}
+        </text>
+    </svg>
+
+    <span class="version">
+        {{ ultimirror.sys.version }}
+    </span>
+</div>

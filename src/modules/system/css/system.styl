@@ -1,0 +1,43 @@
+@require "../../../css/variables"
+@require "../../../css/typography"
+
+@import "jeet"
+
+
+html.admin {
+    module[type="system"] {
+        table {
+            border-collapse collapse
+
+            tbody {
+                td {
+                    padding 10px
+                    border 2px solid white
+                    rem 16px
+                    font-weight 400
+
+                    &.name {
+                        min-width 337px
+                        padding-right 20px
+                    }
+
+                    &.actions {
+                        min-width 350px
+                    }
+                }
+
+                &[data-display="admin"] {
+                    margin-top 20px
+
+                    td {
+                        &.actions {
+                            padding 0
+
+                            moduleConfig_fields(true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

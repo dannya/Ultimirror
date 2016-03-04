@@ -1,0 +1,56 @@
+<div oc-lazy-load="['modules/datetime/js/datetime.js', 'modules/datetime/css/datetime.css']">
+    <div id="module_datetime" ng-controller="DateTimeCtrl">
+
+        <!-- admin -->
+        <div data-display="admin">
+            <div ng-include="'templates/moduleConfig_fields.html'"></div>
+        </div>
+
+        <!-- mirror -->
+        <div data-display="mirror">
+            <!-- theme: digital -->
+            <div ng-if="ultimirror.moduleInstances[moduleKey].config.theme == 'digital'" data-theme="digital">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="date">
+                                {{ ultimirror.moduleInstances[moduleKey].data.datetime | amDateFormat:'dddd, MMMM Do YYYY' }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="time">
+                                <span ng-if="ultimirror.moduleInstances[moduleKey].config.timeFormat == '12hour'">
+                                    {{ ultimirror.moduleInstances[moduleKey].data.datetime | amDateFormat:'h:mma' }}
+                                </span>
+                                <span ng-if="ultimirror.moduleInstances[moduleKey].config.timeFormat == '24hour'">
+                                    {{ ultimirror.moduleInstances[moduleKey].data.datetime | amDateFormat:'HH:mm' }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- theme: analog -->
+            <div ng-if="ultimirror.moduleInstances[moduleKey].config.theme == 'analog'" data-theme="analog">
+                <div class="demo-container clocks active bounce">
+                    <article class="clock station js-london">
+                        <section class="label">London</section>
+                        <section class="hours-container">
+                            <section class="hours"></section>
+                        </section>
+                        <section class="minutes-container">
+                            <section class="minutes"></section>
+                        </section>
+                        <section class="seconds-container">
+                            <section class="seconds"></section>
+                        </section>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

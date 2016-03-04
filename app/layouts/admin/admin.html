@@ -1,0 +1,29 @@
+<div class="animate fadeInOut">
+    <section id="status">
+        <h2>
+            Status
+        </h2>
+
+        <module type="system"></module>
+    </section>
+
+    <section id="layouts">
+        <h2>
+            Layouts
+
+            <aside ng-if="canDragLayouts">
+                <strong>Note:</strong> Layouts can be dragged-and-dropped onto the scheduler below
+            </aside>
+        </h2>
+
+        <module type="layoutmanager"></module>
+    </section>
+
+    <section id="scheduling">
+        <h2>
+            Scheduling
+        </h2>
+
+        <module type="scheduler"></module>
+    </section>
+</div>

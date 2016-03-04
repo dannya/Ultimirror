@@ -1,0 +1,228 @@
+@require "../../../css/variables"
+@require "../../../css/typography"
+
+@import "jeet"
+
+
+@font-face {
+    font-family 'weather'
+    src url('../fonts/weather.eot?14486380')
+    src url('../fonts/weather.eot?14486380#iefix') format('embedded-opentype'),
+            url('../fonts/weather.woff?14486380') format('woff'),
+            url('../fonts/weather.ttf?14486380') format('truetype'),
+            url('../fonts/weather.svg?14486380#weather') format('svg')
+
+    font-weight normal
+    font-style normal
+}
+
+
+html.admin,
+html.mirror {
+    #module_weather {
+        table {
+            width 100%
+
+            tr {
+                td {
+                    span.icon:before {
+                        font-family 'weather'
+                        font-style normal
+                        font-weight normal
+                        speak none
+
+                        color white
+
+                        display inline-block
+                        text-decoration inherit
+                        width 36px
+                        height 36px
+                        font-size 36px
+                        text-align center
+
+                        font-variant normal
+                        text-transform none
+
+                        line-height 1em
+
+                        content '\e80d'
+                    }
+
+                    &.weather_01d {
+                        // clear
+                        span.icon:before {
+                            content '\e804'
+                        }
+                    }
+                    &.weather_01n {
+                        // clear
+                        span.icon:before {
+                            content '\e805'
+                        }
+                    }
+                    &.weather_02d,
+                    &.weather_02n,
+                    &.weather_03d,
+                    &.weather_03n,
+                    &.weather_04d,
+                    &.weather_04n {
+                        // clouds
+                        span.icon:before {
+                            content '\e801'
+                        }
+                    }
+                    &.weather_09d,
+                    &.weather_09n {
+                        // drizzle
+                        span.icon:before {
+                            content '\e800'
+                        }
+                    }
+                    &.weather_10d,
+                    &.weather_10n {
+                        // rain
+                        span.icon:before {
+                            content '\e803'
+                        }
+                    }
+                    &.weather_11d,
+                    &.weather_11n {
+                        // thunderstorm
+                        span.icon:before {
+                            content '\e802'
+                        }
+                    }
+                    &.weather_13d,
+                    &.weather_13n {
+                        // snow
+                        span.icon:before {
+                            content '\e806'
+                        }
+                    }
+                    &.weather_50d,
+                    &.weather_50n {
+                        // mist
+                        span.icon:before {
+                            content '\e80c'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+html.admin {
+    #module_weather {
+        table {
+            border-collapse collapse
+
+            tbody {
+                td {
+                    padding 10px
+                    border 2px solid white
+                    rem 22px
+                    font-weight 400
+                }
+            }
+        }
+    }
+}
+
+
+html.mirror {
+    #module_weather {
+        .loading {
+            min-height 300px
+        }
+
+
+        table {
+            border-collapse collapse
+            font-family fontOrbitron
+
+            thead {
+                th {
+                    padding 0 0 20px 0
+                    text-align left
+                    rem 30px
+                    font-family fontOrbitron
+                    font-weight normal
+                }
+            }
+
+            tbody {
+                td {
+                    padding 10px
+                    border 2px solid white
+                    rem 22px
+                    font-weight 400
+                }
+            }
+        }
+
+
+        // theme: current
+        [data-theme="current"] {
+
+        }
+
+
+        // theme: current_hybrid
+        [data-theme="current_hybrid"] {
+            table {
+                thead {
+                    tr {
+                        text-align center
+
+                        &.icon {
+                            td {
+                                padding-bottom 20px
+
+                                span.icon:before {
+                                    width 200px
+                                    height 200px
+                                    font-size 200px
+                                }
+                            }
+                        }
+
+                        &.detail {
+                            td {
+                                padding 0 0 20px 0
+                                rem 30px;
+                            }
+                        }
+                    }
+                }
+
+                tbody {
+                    td {
+                        text-align center
+                    }
+                }
+            }
+        }
+
+
+        // theme: 5day
+        [data-theme="5day"] {
+            table {
+                tbody {
+                    td {
+                        &.day {
+                            min-width 150px
+                        }
+                        &.condition {
+                            min-width 120px
+                        }
+                        &.temperature {
+                            min-width 72px
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

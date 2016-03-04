@@ -1,0 +1,68 @@
+// variables
+basesize = 18px
+
+
+// viewport breakpoints
+hd = 1920px
+laptop = 1600px
+tablet = 1440px
+phone = 1000px
+mini = 767px
+tiny = 410px
+
+
+
+
+// mixins
+rem(val) {
+    font-size val
+    font-size (val / basesize)rem
+}
+
+
+mq(width, maxmin = 'max') {
+    if (width == tiny) {
+        @media screen and ({maxmin}-width: width) and ({maxmin}-height: width) {
+            {block}
+        }
+
+    } else {
+        @media screen and ({maxmin}-width: width) {
+            {block}
+        }
+    }
+}
+
+
+mq_h(height, maxmin = 'max') {
+    @media screen and ({maxmin}-height: height) {
+        {block}
+    }
+}
+
+
+
+
+// content mixins
+moduleConfig_fields(enclosed) {
+    input[type="text"],
+    input[type="password"],
+    select {
+        width 100%
+        padding 10px
+        background black
+        color white
+        rem 16px
+        font-family fontMontserrat
+
+        if (enclosed == true) {
+            border 0
+        } else {
+            border 2px solid white
+        }
+    }
+
+    select {
+        padding 9px 6px
+    }
+}

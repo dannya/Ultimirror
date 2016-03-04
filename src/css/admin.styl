@@ -1,0 +1,208 @@
+@require "base"
+
+
+html.admin {
+    // adjust font-sizes
+    +mq(phone) {
+        font-size (basesize + 10)
+    }
+    +mq(tiny) {
+        font-size (basesize - 2)
+    }
+
+
+    overflow-y auto
+
+    // padding
+    padding 20px
+
+    &.edgePadding_none {
+        padding 0
+    }
+    &.edgePadding_small {
+        padding 10px
+    }
+    &.edgePadding_medium {
+        padding 20px
+    }
+    &.edgePadding_large {
+        padding 30px
+    }
+
+
+    [data-display="all"],
+    [data-display="admin"] {
+        display block
+    }
+
+
+    h1 {
+        position relative
+        margin-bottom 10px
+
+        span {
+            font-family fontBaumans
+            text-transform lowercase
+
+            +mq(phone) {
+                rem 44px
+            }
+        }
+
+        nav {
+            position absolute
+            top -14px
+            right 0
+
+            ul {
+                margin 0
+                padding 0
+                list-style none
+
+                li {
+                    display inline-block
+                    margin 0 0 0 10px !important
+
+                    &:first-child {
+                        margin 0 !important
+                    }
+                }
+            }
+        }
+    }
+
+
+    layout {
+        padding-top 20px
+        border-top 2px solid white
+
+        .row {
+            &.bottom {
+                position initial
+            }
+        }
+
+        // when editing other layouts
+        &:not([data-layout="admin/admin"]) {
+            module {
+                min-width 400px
+                padding 16px
+                border 2px solid white
+
+                h2 {
+                    margin 0 0 20px 0
+                    text-align left
+
+                    span.id {
+                        display inline-block
+                        float right
+                        padding-top 9px
+                        font-style italic
+
+                        rem 18px
+                        font-weight 400
+                        opacity 0.5
+                        cursor help
+
+                        transition opacity 0.3s ease
+
+                        &:hover {
+                            opacity 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    [data-display="admin"] {
+        dl {
+            margin 0 0 30px 0
+
+            &:last-child {
+                margin-bottom 0
+            }
+
+            dt {
+                margin 0 0 10px 0
+                rem 18px
+                font-family fontMontserrat
+                font-weight 700
+                text-align left
+            }
+
+            dd {
+                margin 0
+                text-align left
+
+                ul {
+                    margin 0
+                    padding 0
+                    list-style none
+
+                    li {
+                        display inline-block
+                        padding-right 30px
+
+                        input[type="radio"] {
+                            float left
+                            margin 3px 6px 3px 0
+                        }
+                        label {
+                            cursor pointer
+                        }
+                    }
+                }
+
+                moduleConfig_fields(false)
+            }
+        }
+    }
+
+
+    section {
+        width 80%
+        margin 40px 0 80px 0
+
+        &:first-child {
+            margin-top 0
+        }
+        &:last-child {
+            margin-bottom 0
+        }
+
+        +mq(phone) {
+            width 100%
+        }
+
+
+        &#layouts {
+            aside[ng-if="canDragLayouts"] {
+                display inline-block
+                float right
+                padding-top 7px
+                font-style italic
+
+                rem 18px
+                font-weight 400
+                opacity 0.5
+                cursor help
+
+                transition opacity 0.3s ease
+
+                &:hover {
+                    opacity 1
+                }
+            }
+        }
+
+
+        &#scheduling {
+            // hide scheduler when the viewport is too small
+            +mq(phone) {
+                display none
+            }
+        }
+    }
+}

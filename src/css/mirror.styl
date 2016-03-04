@@ -1,0 +1,17 @@
+@require "base"
+
+
+html.mirror {
+    // hide mouse cursor on mirror UI
+    &:not(.debug) {
+        body {
+            cursor none
+        }
+    }
+
+
+    [data-display="all"],
+    [data-display="mirror"] {
+        display block
+    }
+}
