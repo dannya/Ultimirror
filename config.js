@@ -11,7 +11,8 @@ var ultimirror = {
             windowedHeight: 1280,
             showWindow:     false,
             webInspector:   false,
-            zoom:           1
+            zoom:           1,
+            updateUrl:      false
         },
 
         production: {
@@ -25,7 +26,8 @@ var ultimirror = {
             windowedHeight: 1024,
             showWindow:     true,
             webInspector:   false,
-            zoom:           1
+            zoom:           1,
+            updateUrl:      'https://github.com/dannyakakong/ultimirror/blob/master/package.json'
         }
     },
 
