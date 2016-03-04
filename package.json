@@ -37,6 +37,7 @@
     "request": "^2.69.0",
     "socket.io": "^1.4.5",
     "traverse": "^0.6.6"
+  },
   "devDependencies": {
     "gulp": "~3.9.0",
     "gulp-autoprefixer": "^2.3.1",
