@@ -129,11 +129,11 @@ var fn = {
             // set up interval
             _autoChangeInterval = setInterval(
                 function () {
-                    // TODO: make this switch based on config values
-                    ultimirror.fn.update(
-                        ['layout', 'mirror'],
-                        (ultimirror.layout.mirror === 'bigclock') ? 'default' : 'bigclock'
-                    );
+                    // // TODO: make this switch based on config values
+                    // ultimirror.fn.update(
+                    //     ['layout', 'mirror'],
+                    //     (ultimirror.layout.mirror === 'bigclock') ? 'default' : 'bigclock'
+                    // );
 
                 },
                 (10 * 1000)
