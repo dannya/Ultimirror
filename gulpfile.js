@@ -1,4 +1,5 @@
 var argv = require('yargs').argv;
+var runSequence = require('run-sequence');
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
 var clean = require('gulp-clean');
@@ -289,10 +290,13 @@ gulp.task(
 
 gulp.task(
     'release',
-    [
-        'clean',
-        'default'
-    ]
+    function (callback) {
+        runSequence(
+            'clean',
+            'default',
+            callback
+        );
+    }
 );
 
 
