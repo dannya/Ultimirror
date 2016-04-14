@@ -182,7 +182,7 @@ ultimirror.path = function (pathItems, injectMin) {
     );
 
     // inject '.min' into filename?
-    if (!ultimirror.config.debug || (injectMin !== false)) {
+    if (!ultimirror.config.debug && (injectMin !== false)) {
         pathItems[pathItems.length - 1] = pathItems[pathItems.length - 1].replace('.', '.min.');
     }
 

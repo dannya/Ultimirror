@@ -1,6 +1,6 @@
 {
   "name": "Ultimirror",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "GPL-3.0",
   "description": "Ultimirror",
   "main": "main.js",
@@ -20,6 +20,8 @@
     "mirror",
     "raspberry pi",
     "rpi",
+    "node",
+    "angular",
     "dashboard"
   ],
   "author": {
@@ -44,21 +46,20 @@
     "traverse": "^0.6.6"
   },
   "devDependencies": {
+    "run-sequence": "^1.1.5",
+    "yargs": "^4.2.0",
     "gulp": "~3.9.0",
-    "gulp-autoprefixer": "^2.3.1",
-    "gulp-clean": "^0.3.1",
-    "gulp-concat": "~2.5.0",
-    "gulp-csso": "~1.0.0",
-    "gulp-electron": "0.0.10",
     "gulp-if": "^2.0.0",
-    "gulp-imagemin": "~2.2.0",
-    "gulp-newer": "~1.1.0",
-    "gulp-rename": "~1.2.0",
+    "gulp-clean": "^0.3.1",
     "gulp-replace": "^0.5.4",
     "gulp-stylus": "^2.2.0",
-    "gulp-uglify": "~1.1.0",
     "jeet": "^6.1.2",
-    "run-sequence": "^1.1.5",
-    "yargs": "^4.2.0"
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-csso": "~1.0.0",
+    "gulp-rename": "~1.2.0",
+    "gulp-concat": "~2.5.0",
+    "gulp-uglify": "~1.1.0",
+    "gulp-newer": "~1.1.0",
+    "gulp-imagemin": "~2.2.0"
   }
 }

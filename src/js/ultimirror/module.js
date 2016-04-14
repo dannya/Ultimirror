@@ -186,12 +186,6 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                     if (self._config[self.moduleId]) {
                         self._config = self._config[self.moduleId];
 
-                        //
-                        console.log('--2');
-                        console.log(
-                            self._config
-                        );
-
                     } else {
                         // no specific config matching instance ID, use default config
                         self._config = self._processConfig(

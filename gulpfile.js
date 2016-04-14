@@ -18,6 +18,12 @@ var imagemin = require('gulp-imagemin');
 // determine if in development mode
 var isDevelopment = argv.development;
 
+if (isDevelopment) {
+    console.log(
+        '---- Development mode ----'
+    );
+}
+
 
 gulp.task('styles_mirror', function () {
     gulp
