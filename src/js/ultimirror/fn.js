@@ -48,6 +48,11 @@ var fn = {
                 experimentalFeatures:       true,
                 experimentalCanvasFeatures: true
             },
+            preload:        ultimirror.path(
+                [
+                    'js', 'preload.js'
+                ]
+            ),
             title:          ultimirror.sys.name + ' ' + ultimirror.sys.version
         });
 

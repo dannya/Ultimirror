@@ -176,17 +176,43 @@ const Weather = UltimirrorModule.extend('Weather', {
             parseInt(weatherItem.dt, 10) * 1000
         );
 
-        return {
+        var data = {
             timestamp:      timestamp,
-            time:           timestamp.toISOString(),
-            icon:           weatherItem.weather[0].icon,
-            condition:      weatherItem.weather[0].main,
-            temperature:    weatherItem.main.temp,
-            temperatureMin: weatherItem.main.temp_min,
-            temperatureMax: weatherItem.main.temp_max,
-            humidity:       weatherItem.main.humidity,
-            windSpeed:      weatherItem.wind.speed
+            time:           timestamp.toISOString()
+        };
+
+        // safely add additional weather data
+        if (weatherItem.weather && weatherItem.weather[0]) {
+            if (weatherItem.weather[0].icon) {
+                data['icon'] = weatherItem.weather[0].icon;
+            }
+            if (weatherItem.weather[0].main) {
+                data['condition'] = weatherItem.weather[0].main;
+            }
         }
+
+        if (weatherItem.main) {
+            if (weatherItem.main.temp) {
+                data['temperature'] = weatherItem.main.temp;
+            }
+            if (weatherItem.main.temp_min) {
+                data['temperatureMin'] = weatherItem.main.temp_min;
+            }
+            if (weatherItem.main.temp_max) {
+                data['temperatureMax'] = weatherItem.main.temp_max;
+            }
+            if (weatherItem.main.humidity) {
+                data['humidity'] = weatherItem.main.humidity;
+            }
+        }
+
+        if (weatherItem.wind) {
+            if (weatherItem.wind.speed) {
+                data['windSpeed'] = weatherItem.wind.speed;
+            }
+        }
+
+        return data;
     }
 });
 

@@ -136,6 +136,7 @@ gulp.task('scripts_admin', function () {
 gulp.task('scripts_ondemand', function () {
     gulp
         .src([
+            'src/js/preload.js',
             'src/js/lib_ondemand/*.js'
         ])
         .pipe(
@@ -281,6 +282,17 @@ gulp.task(
 );
 
 gulp.task(
+    'scripts',
+    [
+        'scripts_mirror',
+        'scripts_admin',
+        'scripts_ondemand',
+        'scripts_ultimirror',
+        'scripts_modules'
+    ]
+);
+
+gulp.task(
     'clean',
     function () {
         return gulp
@@ -324,7 +336,7 @@ gulp.task('watch', function () {
     gulp.watch(['src/templates/**/*.html'], ['transfer_templates']);
 
     gulp.watch(['src/js/*'], ['scripts_mirror', 'scripts_admin']);
-    gulp.watch(['src/js/lib_ondemand/**'], ['scripts_ondemand']);
+    gulp.watch(['src/js/preload.js', 'src/js/lib_ondemand/**'], ['scripts_ondemand']);
     gulp.watch(['src/js/ultimirror/**'], ['scripts_ultimirror']);
 
     gulp.watch(['src/img/**'], ['images']);
