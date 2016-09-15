@@ -1,0 +1,20 @@
+<div oc-lazy-load="['modules/photos/css/photos.css']">
+    <div id="module_photos">
+
+        <!-- loading -->
+        <div ng-if="ultimirror.moduleInstances[moduleKey].showLoading" class="loading">
+            <div ng-include="'templates/loading_emoticon.html'"></div>
+        </div>
+
+        <!-- admin -->
+        <div data-display="admin">
+            <div ng-include="'templates/moduleConfig_fields.html'"></div>
+        </div>
+
+        <!-- mirror -->
+        <div ng-if="ultimirror.moduleInstances[moduleKey].data && !ultimirror.moduleInstances[moduleKey].showLoading" data-display="mirror">
+            <img src="{{ ultimirror.moduleInstances[moduleKey].data.url }}" alt="" />
+        </div>
+
+    </div>
+</div>
