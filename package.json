@@ -53,7 +53,7 @@
     "gulp-clean": "^0.3.1",
     "gulp-replace": "^0.5.4",
     "gulp-stylus": "^2.2.0",
-    "jeet": "^6.1.2",
+    "jeet": "6.1.2",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-csso": "~1.0.0",
     "gulp-rename": "~1.2.0",
