@@ -153,6 +153,12 @@ const System = UltimirrorModule.extend('System', {
                 }
 
 
+                // try and get system temperature
+                if (osName !== 'win32') {
+                    
+                }
+
+
                 // trigger success callback
                 success(
                     {

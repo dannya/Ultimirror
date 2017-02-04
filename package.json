@@ -1,6 +1,6 @@
 {
   "name": "Ultimirror",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "license": "GPL-3.0",
   "description": "Ultimirror",
   "main": "main.js",
@@ -8,7 +8,7 @@
     "prepublish": "gulp release",
     "start": "electron --enable-logging main.js",
     "debug": "electron --enable-logging main.js -w -d",
-    "development": "npm run debug"
+    "development": "gulp --development && electron --enable-logging main.js -w -d"
   },
   "repository": {
     "type": "git",

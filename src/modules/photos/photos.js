@@ -12,8 +12,6 @@ const UltimirrorModule = require(
     )
 );
 
-// require('request').debug = true;
-
 
 const Photos = UltimirrorModule.extend('Photos', {
     moduleType: 'photos',

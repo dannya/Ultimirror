@@ -462,6 +462,14 @@ console.info(
 );
 
 
+// warn if no window will be opened
+if (!ultimirror.config.showWindow) {
+    console.info(
+        '!! Note: Ultimirror window is disabled in the config, visit the URL below to operate !!' + '\n'
+    );
+}
+
+
 // initialise mandatory modules
 for (var i in ultimirror.mandatoryModules) {
     var moduleId    = 'default',

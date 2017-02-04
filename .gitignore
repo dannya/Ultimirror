@@ -1,5 +1,5 @@
 /.idea
 /node_modules
+/app
 **.DS_Store
 *.iml
-/app

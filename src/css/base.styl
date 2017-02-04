@@ -311,13 +311,26 @@ layout {
 
         svg {
             position absolute
-            top calc(50vh - 13vh)
-            height 26vh
             width 100%
 
-            +mq(phone) {
-                top calc(50vh - 18vh)
-                height 36vh
+            +o(portrait) {
+                top calc(50vh - 13vh)
+                height 26vh
+
+                +mq(phone) {
+                    top calc(50vh - 18vh)
+                    height 36vh
+                }
+            }
+
+            +o(landscape) {
+                top calc(50vh - 21vh)
+                height 42vh
+
+                +mq(phone) {
+                    top calc(50vh - 26vh)
+                    height 52vh
+                }
             }
 
             text {

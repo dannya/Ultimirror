@@ -32,14 +32,16 @@ var fn = {
     createWindow: function () {
         // create the browser window
         var win = new electron.BrowserWindow({
-            width:          ultimirror.config.windowedWidth,
-            height:         ultimirror.config.windowedHeight,
-            minWidth:       600,
-            minHeight:      600,
-            alwaysOnTop:    (ultimirror.config.notOnTop === false) && (ultimirror.config.debug === false),
-            darkTheme:      true,
-            fullscreen:     (ultimirror.config.windowed === false),
-            titleBarStyle:  'hidden',
+            width:              ultimirror.config.windowedWidth,
+            height:             ultimirror.config.windowedHeight,
+            minWidth:           600,
+            minHeight:          600,
+            alwaysOnTop:        (ultimirror.config.notOnTop === false) && (ultimirror.config.debug === false),
+            darkTheme:          true,
+            fullscreen:         (ultimirror.config.windowed === false),
+            titleBarStyle:      'hidden',
+            backgroundColor:    '#000000',
+            transparent:        true,
             webPreferences: {
                 zoomFactor:                 (ultimirror.config.zoom ? ultimirror.config.zoom : 1.0),
                 plugins:                    true,
@@ -48,12 +50,12 @@ var fn = {
                 experimentalFeatures:       true,
                 experimentalCanvasFeatures: true
             },
-            preload:        ultimirror.path(
+            preload:            ultimirror.path(
                 [
                     'js', 'preload.js'
                 ]
             ),
-            title:          ultimirror.sys.name + ' ' + ultimirror.sys.version
+            title:              ultimirror.sys.name + ' ' + ultimirror.sys.version
         });
 
         // load the specified URL, otherwise the local mirror / config HTML file
