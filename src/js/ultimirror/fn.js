@@ -1,3 +1,5 @@
+const exec      = require('child_process').exec;
+const os        = require('os');
 const path      = require('path');
 const traverse  = require('traverse');
 
@@ -92,6 +94,11 @@ var fn = {
                 win = null;
             }
         );
+
+        // if possible, move mouse to ensure mouse cursor is hidden
+        if (os.platform() !== 'win32') {
+            exec('xdotool mousemove_relative 10 10');
+        }
 
         // stop display from sleeping
         var powersave = electron.powerSaveBlocker.start('prevent-display-sleep');
