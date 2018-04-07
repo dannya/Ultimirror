@@ -3,6 +3,8 @@ const moment    = require('moment');
 const request   = require('request');
 
 const Promise   = require('promise');
+const Flickr    = require('flickrapi');
+
 
 const UltimirrorModule = require(
     ultimirror.path(
@@ -51,61 +53,55 @@ const Photos = UltimirrorModule.extend('Photos', {
         // initialise request counter
         var getRemoteData = function (success, error) {
             // get and process the remote data
-            request.post(
+            Flickr.authenticate(
                 {
-                    url:        'https://api.flickr.com/services/rest/',
-                    json:       true,
-                    qs: {
-                        format:         'json',
-                        method:         'flickr.people.getPhotos',
-                        api_key:        self.config.apiKey,
-                        user_id:        self.config.user,
-                        extras:         'description,date_taken,url_l',
-                        per_page:       500,
-                        nojsoncallback: 1
-                    }
+                    api_key: self.config.apiKey,
+                    secret: self.config.apiSecret,
+                    access_token: self.config.accessToken,
+                    access_token_secret: self.config.accessTokenSecret,
+                    user_id: self.config.user
                 },
-                function (err, response, body) {
-                    if (!err) {
-                        if ((response.statusCode === 200) && body.photos) {
-                            // hide loading spinner
-                            self.loading(false);
-
-                            try {
-                                // choose a random photo
-                                var randomPhoto = Math.floor(
-                                    Math.random() * body.photos.total
-                                );
-
-                                // trigger success callback
-                                console.log('success for ' + self.moduleType);
-
-                                success({
-                                    url: body.photos.photo[randomPhoto].url_l
-                                });
-
-                            } catch (err) {
-                                error(err);
-                            }
-
-                        } else {
-                            // - unknown response code
-
-                            // hide loading spinner
-                            self.loading(false);
-
-                            // trigger error callback
-                            error(err);
-                        }
-
-                    } else {
-                        // - unknown error
-
-                        // hide loading spinner
-                        self.loading(false);
-
+                function (err, flickr) {
+                    if (err) {
                         // trigger error callback
                         error(err);
+
+                    } else {
+                        flickr.people.getPhotos({
+                            api_key: self.config.apiKey,
+                            user_id: self.config.user,
+                            authenticated: true,
+                            extras:         'description,date_taken,url_l',
+                            page: 1,
+                            per_page: 500
+                        },
+                        function (err, result) {
+                            // hide loading spinner
+                            self.loading(false);
+
+                            if (err) {
+                                // trigger error callback
+                                error(err);
+
+                            } else {
+                                try {
+                                    // choose a random photo
+                                    var randomPhoto = Math.floor(
+                                        Math.random() * parseInt(result.photos.total, 10)
+                                    );
+
+                                    // trigger success callback
+                                    console.log('success for ' + self.moduleType);
+
+                                    success({
+                                        url: result.photos.photo[randomPhoto].url_l
+                                    });
+
+                                } catch (err) {
+                                    error(err);
+                                }
+                            }
+                        });
                     }
                 }
             );

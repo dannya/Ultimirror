@@ -13,7 +13,7 @@
 
         <!-- mirror -->
         <div ng-if="ultimirror.moduleInstances[moduleKey].data && !ultimirror.moduleInstances[moduleKey].showLoading" data-display="mirror">
-            <img src="{{ ultimirror.moduleInstances[moduleKey].data.url }}" alt="" />
+            <img ng-src="{{ ultimirror.moduleInstances[moduleKey].data.url }}" alt="" />
         </div>
 
     </div>
