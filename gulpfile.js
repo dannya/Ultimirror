@@ -234,6 +234,15 @@ gulp.task('transfer_templates', function () {
 });
 
 
+gulp.task('transfer_fonts', function () {
+    // optimise images
+    gulp
+        .src('src/fonts/**')
+        .pipe(newer('app/fonts'))
+        .pipe(gulp.dest('app/fonts'));
+});
+
+
 gulp.task('images', function () {
     // optimise images
     gulp
@@ -276,6 +285,7 @@ gulp.task(
         'transfer_pages',
         'transfer_layouts',
         'transfer_templates',
+        'transfer_fonts',
         'images_modules',
         'images'
     ]
