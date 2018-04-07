@@ -71,18 +71,22 @@ const Photos = UltimirrorModule.extend('Photos', {
                             // hide loading spinner
                             self.loading(false);
 
-                            // choose a random photo
-                            var randomPhoto = Math.floor(
-                                Math.random() * body.photos.total
-                            );
+                            try {
+                                // choose a random photo
+                                var randomPhoto = Math.floor(
+                                    Math.random() * body.photos.total
+                                );
 
-                            // trigger success callback
-                            console.log('success for ' + self.moduleType);
+                                // trigger success callback
+                                console.log('success for ' + self.moduleType);
 
-                            success({
-                                url: body.photos.photo[randomPhoto].url_l
-                            });
+                                success({
+                                    url: body.photos.photo[randomPhoto].url_l
+                                });
 
+                            } catch (err) {
+                                error(err);
+                            }
 
                         } else {
                             // - unknown response code
