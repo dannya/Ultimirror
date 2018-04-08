@@ -3,9 +3,9 @@ const os        = require('os');
 const path      = require('path');
 const traverse  = require('traverse');
 
-const electron  = require('electron');
-
 const Promise   = require('promise');
+
+const Chalk     = require('chalk');
 
 
 // internal variables
@@ -14,6 +14,37 @@ var _autoChangeInterval;
 
 // exported functions
 var fn = {
+    log: {
+        info: function (str) {
+            console.info(
+                Chalk.white.bgBlue(
+                    str
+                )
+            );
+        },
+        success: function (str) {
+            console.log(
+                Chalk.white.bgGreen(
+                    str
+                )
+            );
+        },
+        warning: function (str) {
+            console.warn(
+                Chalk.white.bgYellow(
+                    str
+                )
+            );
+        },
+        error: function (str) {
+            console.error(
+                Chalk.white.bgRed(
+                    str
+                )
+            );
+        },
+    },
+
     network: {
         hasInternet: function (callback) {
             require('dns')
@@ -32,6 +63,8 @@ var fn = {
     },
 
     createWindow: function () {
+        const electron  = require('electron');
+
         // create the browser window
         var win = new electron.BrowserWindow({
             width:              ultimirror.config.windowedWidth,
@@ -192,7 +225,9 @@ var fn = {
                         );
 
                     } catch (err) {
-                        console.error(err);
+                        ultimirror.fn.log.error(
+                            err
+                        );
 
                         // trigger error callback
                         error();

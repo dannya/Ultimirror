@@ -104,7 +104,9 @@ const Weather = UltimirrorModule.extend('Weather', {
                             self.loading(false);
 
                             // trigger success callback
-                            console.log('success for ' + self.moduleType + ' (' + self.config.location + ')');
+                            ultimirror.fn.log.success(
+                                'success for ' + self.moduleType + ' (' + self.config.location + ')'
+                            );
 
                             success({
                                 location:   self.config.location.split(',')[0],

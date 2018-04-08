@@ -4,6 +4,8 @@ const fs        = require('fs');
 const Class     = require('class.extend');
 const Promise   = require('promise');
 
+const yaml      = require('js-yaml');
+
 
 const UltimirrorModule = Class.extend('UltimirrorModule', {
     // start subclass override
@@ -172,12 +174,15 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                 try {
                     // ...config file exists, so it takes precedence
                     self._config = self._processConfig(
-                        require(
-                            ultimirror.path(
-                                [
-                                    'modules', self.moduleType, (self.moduleType + '.json')
-                                ],
-                                false
+                        yaml.safeLoad(
+                            fs.readFileSync(
+                                ultimirror.path(
+                                    [
+                                        'modules', self.moduleType, (self.moduleType + '.config')
+                                    ],
+                                    false
+                                ),
+                                'utf8'
                             )
                         )
                     );
@@ -194,7 +199,11 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                     }
 
                 } catch (err) {
-                    // ...config file does not exist, use default config
+                    ultimirror.fn.log.error(
+                        '- could not load config file for ' + self.moduleType
+                    );
+
+                    // ...config file is invalid or does not exist, use default config
                     self._config = self._processConfig(
                         self.defaultConfig
                     );
@@ -332,7 +341,9 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
 
         } catch (err) {
             // error
-            console.error(err);
+            ultimirror.fn.log.error(
+                err
+            );
         }
     },
 
@@ -381,8 +392,8 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
 
                 function (err) {
                     // error
-                    console.error('Data load error: ' + self.moduleType + '_' + self.moduleId);
-                    console.error(err);
+                    ultimirror.fn.log.error('Data load error: ' + self.moduleType + '_' + self.moduleId);
+                    ultimirror.fn.log.error(err);
                 }
             );
     },

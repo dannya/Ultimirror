@@ -1,19 +1,15 @@
 'use strict';
 
 // imports
-const electron  = require('electron'),
-      nomnom    = require('nomnom'),
-      http      = require('http'),
-      path      = require('path'),
-      url       = require('url'),
-      fs        = require('fs'),
-      os        = require('os'),
-      mime      = require('mime'),
-      io        = require('socket.io');
-
-
-// define module shorthand names
-const app = electron.app;
+const nomnom            = require('nomnom');
+const http              = require('http');
+const path              = require('path');
+const url               = require('url');
+const fs                = require('fs');
+const os                = require('os');
+const mime              = require('mime');
+const io                = require('socket.io');
+const ChalkAnimation    = require('chalk-animation');
 
 
 // keep a global reference of certain objects to stop them getting garbage collected
@@ -143,10 +139,6 @@ ultimirror.config = {};
 var isDebug = configCommandLine['debug'] ? configCommandLine['debug'] : staticConfigOptions['debug'].default;
 
 
-// enhance system data
-ultimirror.sys.minified = (ultimirror.config.debug === false) ? '.min' : '';
-
-
 // check for split debug / production config
 if ((typeof staticConfig.debug === 'object') && (typeof staticConfig.production === 'object')) {
     if (isDebug) {
@@ -180,11 +172,6 @@ ultimirror.path = function (pathItems, injectMin) {
     pathItems.unshift(
         ultimirror.sys.rootDir, 'app'
     );
-
-    // inject '.min' into filename?
-    if (!ultimirror.config.debug && (injectMin !== false)) {
-        pathItems[pathItems.length - 1] = pathItems[pathItems.length - 1].replace('.', '.min.');
-    }
 
     return path.join.apply(this, pathItems);
 };
@@ -226,17 +213,9 @@ var server = http
                 case '.js':
                     contentType = 'text/javascript';
 
-                    if (!ultimirror.config.debug) {
-                        filepath = filepath.replace('.js', '.min.js');
-                    }
-
                     break;
                 case '.css':
                     contentType = 'text/css';
-
-                    if (!ultimirror.config.debug) {
-                        filepath = filepath.replace('.css', '.min.css');
-                    }
 
                     break;
 
@@ -256,7 +235,9 @@ var server = http
 
             fs.readFile(filepath, function (error, content) {
                 if (error) {
-                    console.error(error);
+                    ultimirror.fn.log.error(
+                        error
+                    );
                 }
 
                 if (error) {
@@ -451,7 +432,7 @@ ipc.on(
 
 
 // show welcome message
-console.info(
+ChalkAnimation.rainbow(
     '\n' + ultimirror.sys.name + ' (v' + ultimirror.sys.version + ')' +
     (
         ultimirror.config.debug ?
@@ -459,12 +440,12 @@ console.info(
             ''
     ) +
     '\n'
-);
+).start();
 
 
 // warn if no window will be opened
 if (!ultimirror.config.showWindow) {
-    console.info(
+    ultimirror.fn.log.info(
         '!! Note: Ultimirror window is disabled in the config, visit the URL below to operate !!' + '\n'
     );
 }
@@ -505,6 +486,19 @@ for (var i in ultimirror.mandatoryModules) {
 
 // create and show app window?
 if (ultimirror.config.showWindow) {
+    const electron = require('electron');
+
+    const app = electron.app;
+
+    if (!app) {
+        ultimirror.fn.log.error(
+            'Electron environment not found'
+        );
+
+        process.exit(1);
+    }
+
+
     // observe app ready event
     app.on(
         'ready',

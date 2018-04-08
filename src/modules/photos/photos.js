@@ -91,7 +91,9 @@ const Photos = UltimirrorModule.extend('Photos', {
                                     );
 
                                     // trigger success callback
-                                    console.log('success for ' + self.moduleType);
+                                    ultimirror.fn.log.success(
+                                        'success for ' + self.moduleType
+                                    );
 
                                     success({
                                         url: result.photos.photo[randomPhoto].url_l

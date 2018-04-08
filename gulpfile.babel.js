@@ -1,22 +1,16 @@
-var argv = require('yargs').argv;
-var runSequence = require('run-sequence');
-var gulp = require('gulp');
-var gulpif = require('gulp-if');
-var clean = require('gulp-clean');
-var replace = require('gulp-replace');
-var stylus = require('gulp-stylus');
-var jeet = require('jeet');
-var autoprefixer = require('gulp-autoprefixer');
-var csso = require('gulp-csso');
-var rename = require('gulp-rename');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var newer = require('gulp-newer');
-var imagemin = require('gulp-imagemin');
+import { argv } from 'yargs';
+import runSequence  from 'run-sequence';
+import gulp  from 'gulp';
+import jeet from 'jeet';
+
+import gulpLoadPlugins from 'gulp-load-plugins';
+
+
+const $ = gulpLoadPlugins();
 
 
 // determine if in development mode
-var isDevelopment = argv.development;
+const isDevelopment = argv.development;
 
 if (isDevelopment) {
     console.log(
@@ -29,7 +23,7 @@ gulp.task('styles_mirror', function () {
     gulp
         .src('src/css/mirror.styl')
         .pipe(
-            stylus(
+            $.stylus(
                 {
                     use: [
                         jeet()
@@ -37,60 +31,48 @@ gulp.task('styles_mirror', function () {
                 }
             )
         )
-        .pipe(autoprefixer())
+        .pipe($.autoprefixer())
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/css')
+            $.if(
+                !isDevelopment, $.csso()
             )
         )
-        .pipe(
-            rename('mirror.min.css')
-        )
-        .pipe(csso())
         .pipe(gulp.dest('app/css'));
 });
+
 
 gulp.task('styles_admin', function () {
     gulp
         .src('src/css/admin.styl')
-        .pipe(stylus(
+        .pipe($.stylus(
             {
                 use: [jeet()]
             }
         ))
-        .pipe(autoprefixer())
+        .pipe($.autoprefixer())
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/css')
+            $.if(
+                !isDevelopment, $.csso()
             )
         )
-        .pipe(
-            rename('admin.min.css')
-        )
-        .pipe(csso())
         .pipe(gulp.dest('app/css'));
 });
+
 
 gulp.task('styles_modules', function () {
     gulp
         .src('src/modules/**/*.styl')
-        .pipe(stylus(
+        .pipe($.stylus(
             {
                 use: [jeet()]
             }
         ))
-        .pipe(autoprefixer())
+        .pipe($.autoprefixer())
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/modules')
+            $.if(
+                !isDevelopment, $.csso()
             )
         )
-        .pipe(
-            rename({
-                suffix: '.min'
-            })
-        )
-        .pipe(csso())
         .pipe(gulp.dest('app/modules'));
 });
 
@@ -101,18 +83,15 @@ gulp.task('scripts_mirror', function () {
             'src/js/base.js',
             'src/js/mirror.js'
         ])
-        .pipe(concat('mirror.js'))
+        .pipe($.concat('mirror.js'))
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/js')
+            $.if(
+                !isDevelopment, $.uglify()
             )
         )
-        .pipe(
-            rename('mirror.min.js')
-        )
-        .pipe(uglify())
         .pipe(gulp.dest('app/js'));
 });
+
 
 gulp.task('scripts_admin', function () {
     gulp
@@ -120,18 +99,15 @@ gulp.task('scripts_admin', function () {
             'src/js/base.js',
             'src/js/admin.js'
         ])
-        .pipe(concat('admin.js'))
+        .pipe($.concat('admin.js'))
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/js')
+            $.if(
+                !isDevelopment, $.uglify()
             )
         )
-        .pipe(
-            rename('admin.min.js')
-        )
-        .pipe(uglify())
         .pipe(gulp.dest('app/js'));
 });
+
 
 gulp.task('scripts_ondemand', function () {
     gulp
@@ -140,18 +116,13 @@ gulp.task('scripts_ondemand', function () {
             'src/js/lib_ondemand/*.js'
         ])
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/js')
+            $.if(
+                !isDevelopment, $.uglify()
             )
         )
-        .pipe(
-            rename({
-                suffix: '.min'
-            })
-        )
-        .pipe(uglify())
         .pipe(gulp.dest('app/js'));
 });
+
 
 gulp.task('scripts_ultimirror', function () {
     gulp
@@ -159,18 +130,13 @@ gulp.task('scripts_ultimirror', function () {
             'src/js/ultimirror/*.js'
         ])
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/js/ultimirror')
+            $.if(
+                !isDevelopment, $.uglify()
             )
         )
-        .pipe(
-            rename({
-                suffix: '.min'
-            })
-        )
-        .pipe(uglify())
         .pipe(gulp.dest('app/js/ultimirror'));
 });
+
 
 gulp.task('scripts_modules', function () {
     gulp
@@ -178,16 +144,10 @@ gulp.task('scripts_modules', function () {
             'src/modules/**/*.js'
         ])
         .pipe(
-            gulpif(
-                isDevelopment, gulp.dest('app/modules')
+            $.if(
+                !isDevelopment, $.uglify()
             )
         )
-        .pipe(
-            rename({
-                suffix: '.min'
-            })
-        )
-        .pipe(uglify())
         .pipe(gulp.dest('app/modules'));
 });
 
@@ -203,9 +163,10 @@ gulp.task('transfer_modules', function () {
         .src([
             'src/modules/**/img/*',
             'src/modules/**/fonts/*',
+            'src/modules/**/*.config',
             'src/modules/**/*.json'
         ])
-        .pipe(newer('app/img'))
+        .pipe($.newer('app/img'))
         .pipe(gulp.dest('app/modules'));
 });
 
@@ -216,6 +177,7 @@ gulp.task('transfer_pages', function () {
         .src('src/*.html')
         .pipe(gulp.dest('app'));
 });
+
 
 
 gulp.task('transfer_layouts', function () {
@@ -238,7 +200,7 @@ gulp.task('transfer_fonts', function () {
     // optimise images
     gulp
         .src('src/fonts/**')
-        .pipe(newer('app/fonts'))
+        .pipe($.newer('app/fonts'))
         .pipe(gulp.dest('app/fonts'));
 });
 
@@ -247,8 +209,8 @@ gulp.task('images', function () {
     // optimise images
     gulp
         .src('src/img/**')
-        .pipe(newer('app/img'))
-        .pipe(imagemin({ progressive: true }))
+        .pipe($.newer('app/img'))
+        .pipe($.imagemin({ progressive: true }))
         .pipe(gulp.dest('app/img'));
 
     // copy favicon
@@ -257,12 +219,13 @@ gulp.task('images', function () {
         .pipe(gulp.dest('app'));
 });
 
+
 gulp.task('images_modules', function () {
     // optimise images
     gulp
         .src('src/modules/**/img/*')
-        .pipe(newer('app/modules'))
-        .pipe(imagemin({ progressive: true }))
+        .pipe($.newer('app/modules'))
+        .pipe($.imagemin({ progressive: true }))
         .pipe(gulp.dest('app/modules'));
 });
 
@@ -291,6 +254,7 @@ gulp.task(
     ]
 );
 
+
 gulp.task(
     'scripts',
     [
@@ -302,6 +266,7 @@ gulp.task(
     ]
 );
 
+
 gulp.task(
     'clean',
     function () {
@@ -312,9 +277,10 @@ gulp.task(
                     read: false
                 }
             )
-            .pipe(clean());
+            .pipe($.clean());
     }
 );
+
 
 gulp.task(
     'release',

@@ -9,14 +9,14 @@ var ultimirror = {
             windowed:       true,
             windowedWidth:  1280,
             windowedHeight: 800,
-            showWindow:     true,
+            showWindow:     false,
             webInspector:   true,
             zoom:           1,
             updateUrl:      false
         },
 
         production: {
-            port:           80,
+            port:           8080,
             config:         false,
             edgePadding:    'medium',
             mute:           false,

@@ -146,7 +146,9 @@ const Quotes = UltimirrorModule.extend('Quotes', {
                             self.loading(false);
 
                             // trigger success callback
-                            console.log('success for ' + self.moduleType);
+                            ultimirror.fn.log.success(
+                                'success for ' + self.moduleType
+                            );
 
                             success({
                                 text: (quoteData.text.length < self.config.maxLength) ? quoteData.text : ''

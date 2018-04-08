@@ -64,7 +64,7 @@ const System = UltimirrorModule.extend('System', {
         {
             "id":       "showIntro",
             "name":     "Show intro screen on start (seconds)",
-            "initial":  12
+            "initial":  false
         }
     ],
 
@@ -146,7 +146,7 @@ const System = UltimirrorModule.extend('System', {
 
                 // show system IP address on the console the first time the app is loaded
                 if (!self.dataLoaded) {
-                    console.info(
+                    ultimirror.fn.log.info(
                         'Configure this mirror @ http://' + ip_display + '\n' +
                         'View this mirror @ http://' + ip_display + '/mirror\n'
                     );
@@ -155,7 +155,7 @@ const System = UltimirrorModule.extend('System', {
 
                 // try and get system temperature
                 if (osName !== 'win32') {
-                    
+
                 }
 
 
