@@ -1,7 +1,11 @@
 import { argv } from 'yargs';
+import path from 'path';
 import runSequence  from 'run-sequence';
 import gulp  from 'gulp';
 import jeet from 'jeet';
+import YAWN from 'yawn-yaml/cjs';
+import es from 'event-stream';
+import fs from 'fs';
 
 import gulpLoadPlugins from 'gulp-load-plugins';
 
@@ -19,6 +23,85 @@ if (isDevelopment) {
 }
 
 
+
+
+// helper functions (https://stackoverflow.com/a/34749873)
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+
+function mergeDeep(target, ...sources) {
+  if (!sources.length) {
+      return target;
+  }
+
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) {
+            Object.assign(target, { [key]: {} });
+        }
+
+        mergeDeep(target[key], source[key]);
+
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources);
+}
+
+
+
+
+// stream functions
+function mergeYamlConfig() {
+    function transform(file, cb) {
+        var filename = file.path.replace(file.base, '');
+
+        if (filename.endsWith('.config')) {
+            // load modifiable YAML representations of config files
+            var newConfig = new YAWN(
+                fs.readFileSync(
+                    path.join(__dirname, 'src', 'config', filename),
+                    'utf8'
+                )
+            );
+            var oldConfig = new YAWN(
+                fs.readFileSync(
+                    path.join(__dirname, 'app', 'config', filename),
+                    'utf8'
+                )
+            );
+
+            // merge the config files
+            newConfig.json = mergeDeep(
+                newConfig.json,
+                oldConfig.json
+            );
+
+            // write changed output
+            file.contents = new Buffer(
+              newConfig.yaml
+            );
+        }
+
+        // run callback to complete pipe
+        cb(null, file);
+    }
+
+    return es.map(transform);
+}
+
+
+
+
+// tasks
 gulp.task('styles_mirror', function () {
     gulp
         .src('src/css/mirror.styl')
@@ -152,6 +235,17 @@ gulp.task('scripts_modules', function () {
 });
 
 
+gulp.task('transfer_config', function () {
+    // merge and copy config files
+    gulp
+        .src([
+            'src/config/**',
+        ])
+        .pipe(mergeYamlConfig())
+        .pipe(gulp.dest('app/config'));
+});
+
+
 gulp.task('transfer_modules', function () {
     // copy HTML pages
     gulp
@@ -166,7 +260,7 @@ gulp.task('transfer_modules', function () {
             'src/modules/**/*.config',
             'src/modules/**/*.json'
         ])
-        .pipe($.newer('app/img'))
+        .pipe($.newer('app/modules'))
         .pipe(gulp.dest('app/modules'));
 });
 
@@ -244,6 +338,7 @@ gulp.task(
         'scripts_ondemand',
         'scripts_ultimirror',
         'scripts_modules',
+        'transfer_config',
         'transfer_modules',
         'transfer_pages',
         'transfer_layouts',
@@ -302,8 +397,8 @@ gulp.task('watch', function () {
 
     gulp.watch(['src/modules/**/*.styl'], ['styles_modules']);
     gulp.watch(['src/modules/**/*.js'], ['scripts_modules']);
-    gulp.watch(['src/modules/**/*.html'], ['transfer_modules']);
-    gulp.watch(['src/modules/**/*.json'], ['transfer_modules']);
+    gulp.watch(['src/config/**'], ['transfer_config']);
+    gulp.watch(['src/modules/**/*.html', 'src/modules/**/*.json'], ['transfer_modules']);
     gulp.watch(['src/modules/**/img/*'], ['images_modules']);
 
     gulp.watch(['src/*.html'], ['transfer_pages']);

@@ -8,6 +8,7 @@ const url               = require('url');
 const fs                = require('fs');
 const os                = require('os');
 const mime              = require('mime');
+const yaml              = require('js-yaml');
 const io                = require('socket.io');
 const ChalkAnimation    = require('chalk-animation');
 
@@ -18,7 +19,7 @@ let win, powersave;
 
 // load package and config
 const pkg = require('./package.json');
-const ultimirror = require('./config');
+const ultimirror = {};
 
 
 // make ultimirror framework available globally
@@ -32,22 +33,46 @@ ultimirror.sys = {
     version:    pkg.version
 };
 
+
+// define function to get full file path
+ultimirror.path = function (pathItems) {
+    pathItems.unshift(
+        ultimirror.sys.rootDir, 'app'
+    );
+
+    return path.join.apply(this, pathItems);
+};
+
+
+// load utility functions
+ultimirror.fn = require(
+    ultimirror.path(
+        [
+            'js', 'ultimirror', 'fn.js'
+        ]
+    )
+);
+
+
 ultimirror.moduleInstances = {};
 
 
 // define command line arguments
 const staticConfigOptions = {
-    config: {
+    configFile: {
         abbr:       'c',
-        flag:       true,
-        default:    false,
-        help:       'Show config page instead of mirror UI'
+        default:    'default',
+        help:       'Load a specified config file'
     },
-    debug: {
-        abbr:       'd',
+    layout: {
+        abbr:       'l',
+        help:       'Show a specified layout'
+    },
+    settings: {
+        abbr:       's',
         flag:       true,
         default:    false,
-        help:       'Enable debugging / development mode'
+        help:       'Show settings page instead of mirror UI'
     },
     webInspector: {
         abbr:       'wi',
@@ -72,10 +97,6 @@ const staticConfigOptions = {
         default:    false,
         help:       'No auto changing of layouts'
     },
-    layout: {
-        abbr:       'l',
-        help:       'Show a specified layout'
-    },
     mute: {
         abbr:       'm',
         flag:       true,
@@ -93,7 +114,7 @@ const staticConfigOptions = {
         flag:       true,
         help:       'Print version and exit',
         callback: function () {
-            return ultimirror.sys.name + ' ' + ultimirror.sys.version;
+            return `${ultimirror.sys.name} ${ultimirror.sys.version}`;
         }
     },
     windowed: {
@@ -130,25 +151,55 @@ var configCommandLine = nomnom
     );
 
 
-// make copy of static config and clear variable for overwriting with merged config
-var staticConfig = ultimirror.config;
-ultimirror.config = {};
+// load base config
+var baseConfigFile = path.join(
+    ultimirror.sys.rootDir, 'base.config'
+);
+
+try {
+    ultimirror.base = yaml.safeLoad(
+        fs.readFileSync(
+            baseConfigFile,
+            'utf8'
+        )
+    );
+
+} catch (e) {
+    ultimirror.fn.log.error(
+        `Could not load ${baseConfigFile}`
+    );
+
+    process.exit(1);
+}
 
 
-// check for debug mode
-var isDebug = configCommandLine['debug'] ? configCommandLine['debug'] : staticConfigOptions['debug'].default;
+// load specified (or default) config file
+var configFile = ultimirror.path(
+    [
+        'config', `${configCommandLine['configFile']}.config`
+    ]
+);
 
-
-// check for split debug / production config
-if ((typeof staticConfig.debug === 'object') && (typeof staticConfig.production === 'object')) {
-    if (isDebug) {
-        ultimirror.config = staticConfig.debug;
-        ultimirror.config.debug = true;
-
-    } else {
-        ultimirror.config = staticConfig.production;
-        ultimirror.config.debug = false;
+try {
+    if (configCommandLine['configFile'] !== 'default') {
+        ultimirror.fn.log.info(
+            `Loading ${configFile}...`
+        );
     }
+
+    ultimirror.config = yaml.safeLoad(
+        fs.readFileSync(
+            configFile,
+            'utf8'
+        )
+    ).config;
+
+} catch (e) {
+    ultimirror.fn.log.error(
+        `Could not load ${configFile}.config`
+    );
+
+    process.exit(1);
 }
 
 
@@ -167,44 +218,22 @@ for (var key in configCommandLine) {
 }
 
 
-// define function to get full / minified file based on debug flag
-ultimirror.path = function (pathItems, injectMin) {
-    pathItems.unshift(
-        ultimirror.sys.rootDir, 'app'
-    );
-
-    return path.join.apply(this, pathItems);
-};
-
-
-// load utility functions
-ultimirror.fn = require(
-    ultimirror.path(
-        [
-            'js', 'ultimirror', 'fn.js'
-        ]
-    )
-);
-
-
-
-
 // start serving interface via URL's
 var server = http
     .createServer(
         function (request, response) {
             // get the file
-            var filepath = unescape(url.parse(request.url).pathname);
+            var filepath = decodeURI(
+                url.parse(request.url).pathname
+            );
 
-            if (filepath === '/') {
+            if ((filepath === '/') || filepath.match(/^\/admin/)) {
                 filepath = '/admin.html';
             } else if (filepath.match(/^\/mirror/)) {
                 filepath = '/mirror.html';
-            } else if (filepath.match(/^\/admin/)) {
-                filepath = '/admin.html';
             }
 
-            filepath = './app' + filepath;
+            filepath = `./app${filepath}`;
 
             var extname     = path.extname(filepath),
                 contentType = 'text/html';
@@ -247,7 +276,7 @@ var server = http
 
                     }  else {
                         response.writeHead(500);
-                        response.end('Sorry, check with the site admin for error: ' + error.code + '\n');
+                        response.end(`Sorry, check with the site admin for error: ${error.code}\n`);
                         response.end();
                     }
 
@@ -284,9 +313,9 @@ ipc.on(
             function (context) {
 
                 // tell mandatory modules we are ready
-                for (var i in ultimirror.mandatoryModules) {
+                for (var i in ultimirror.base.mandatoryModules) {
                     var moduleId    = 'default',
-                        moduleKey   = ultimirror.mandatoryModules[i] + '_' + moduleId;
+                        moduleKey   = `${ultimirror.base.mandatoryModules[i]}_${moduleId}`;
 
                     ultimirror.moduleInstances[moduleKey]
                         .load()
@@ -295,7 +324,7 @@ ipc.on(
                                 socket.emit(
                                     'moduleInitialised',
                                     {
-                                        moduleType: ultimirror.mandatoryModules[i],
+                                        moduleType: ultimirror.base.mandatoryModules[i],
                                         moduleId:   moduleId
                                     }
                                 );
@@ -310,20 +339,20 @@ ipc.on(
                         (ultimirror.moduleInstances['system_default'].config.showIntro > 0)) {
 
                     // temporarily store original value, then set to intro layout
-                    ultimirror.layout._mirror = ultimirror.layout.mirror;
-                    ultimirror.layout.mirror = 'intro';
+                    ultimirror.base.layout._mirror = ultimirror.base.layout.mirror;
+                    ultimirror.base.layout.mirror = 'intro';
 
                     // set layout to change to the initial layout after the specified number of seconds
                     setTimeout(
                         function () {
                             // restore temporary value and clean up storage
-                            ultimirror.layout.mirror = ultimirror.layout._mirror;
-                            delete ultimirror.layout._mirror;
+                            ultimirror.base.layout.mirror = ultimirror.base.layout._mirror;
+                            delete ultimirror.base.layout._mirror;
 
                             // update value to force layout view to change
                             ultimirror.fn.update(
                                 ['layout', 'mirror'],
-                                ultimirror.layout.mirror
+                                ultimirror.base.layout.mirror
                             );
 
                             // set up auto layout switching
@@ -359,7 +388,7 @@ ipc.on(
         socket.on(
             'initialiseModuleInstance',
             function (module) {
-                var moduleKey = module.moduleType + '_' + module.moduleId;
+                var moduleKey = `${module.moduleType}_${module.moduleId}`;
 
                 // initialise module instance if not already initialised
                 if (ultimirror.moduleInstances[moduleKey] === undefined) {
@@ -415,7 +444,7 @@ ipc.on(
 
                 } else if (data.moduleType && data.moduleId) {
                     // attempt to call action on module
-                    var moduleKey = data.moduleType + '_' + data.moduleId;
+                    var moduleKey = `${data.moduleType}_${data.moduleId}`;
 
                     // call function on module if it exists
                     if (ultimirror.moduleInstances[moduleKey] && (typeof ultimirror.moduleInstances[moduleKey][data.fn] === 'function')) {
@@ -433,7 +462,8 @@ ipc.on(
 
 // show welcome message
 ChalkAnimation.rainbow(
-    '\n' + ultimirror.sys.name + ' (v' + ultimirror.sys.version + ')' +
+    '\n' +
+    `${ultimirror.sys.name} (v${ultimirror.sys.version})` +
     (
         ultimirror.config.debug ?
             ' (debug enabled)':
@@ -452,16 +482,16 @@ if (!ultimirror.config.showWindow) {
 
 
 // initialise mandatory modules
-for (var i in ultimirror.mandatoryModules) {
+for (var i in ultimirror.base.mandatoryModules) {
     var moduleId    = 'default',
-        moduleKey   = ultimirror.mandatoryModules[i] + '_' + moduleId;
+        moduleKey   = `${ultimirror.base.mandatoryModules[i]}_${moduleId}`;
 
     // initialise module instance if not already initialised
     if (ultimirror.moduleInstances[moduleKey] === undefined) {
         ultimirror.fn.module
             .load(
                 {
-                    moduleType: ultimirror.mandatoryModules[i],
+                    moduleType: ultimirror.base.mandatoryModules[i],
                     moduleId:   moduleId
                 }
             )

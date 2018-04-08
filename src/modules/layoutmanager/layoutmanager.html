@@ -13,11 +13,11 @@
                     </td>
                 </tr>
 
-                <tr ng-repeat="(layoutId, layout) in ultimirror.layouts" on-finish-render="layoutsRendered">
+                <tr ng-repeat="(layoutId, layout) in ultimirror.base.layouts" on-finish-render="layoutsRendered">
                     <td class="name">
                         {{ layout.name }}
 
-                        <span ng-if="ultimirror.layout.mirror == layoutId" class="currentlyDisplaying">
+                        <span ng-if="ultimirror.base.layout.mirror == layoutId" class="currentlyDisplaying">
                             []
                         </span>
                     </td>
@@ -28,7 +28,7 @@
                         <a ng-click="changeCurrentlyDisplaying(layoutId, true)" href="#">
                             Edit
                         </a>
-                        <a ng-if="ultimirror.layout.mirror != layoutId" ng-click="changeCurrentlyDisplaying(layoutId)" href="#">
+                        <a ng-if="ultimirror.base.layout.mirror != layoutId" ng-click="changeCurrentlyDisplaying(layoutId)" href="#">
                             Show on mirror now
                         </a>
                     </td>

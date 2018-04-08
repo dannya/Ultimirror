@@ -179,8 +179,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                                 ultimirror.path(
                                     [
                                         'modules', self.moduleType, (self.moduleType + '.config')
-                                    ],
-                                    false
+                                    ]
                                 ),
                                 'utf8'
                             )
@@ -199,9 +198,11 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                     }
 
                 } catch (err) {
-                    ultimirror.fn.log.error(
-                        '- could not load config file for ' + self.moduleType
-                    );
+                    if (ultimirror.config.debug) {
+                        ultimirror.fn.log.error(
+                            `- could not load config file for "${self.moduleType}" module`
+                        );
+                    }
 
                     // ...config file is invalid or does not exist, use default config
                     self._config = self._processConfig(
@@ -267,8 +268,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                     ultimirror.path(
                         [
                             'modules', this.moduleType, (this.moduleType + '.json')
-                        ],
-                        false
+                        ]
                     )
                 )
             );
@@ -318,8 +318,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
             var outputPath = ultimirror.path(
                 [
                     'modules', this.moduleType, (this.moduleType + '.json')
-                ],
-                false
+                ]
             );
 
             // write to file

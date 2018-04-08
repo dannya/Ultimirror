@@ -2,10 +2,14 @@ const exec      = require('child_process').exec;
 const os        = require('os');
 const path      = require('path');
 const traverse  = require('traverse');
-
+const moment    = require('moment');
 const Promise   = require('promise');
-
 const Chalk     = require('chalk');
+
+
+// set Moment locale
+// TODO: set based on system locale
+moment.locale('en-gb');
 
 
 // internal variables
@@ -25,7 +29,7 @@ var fn = {
         success: function (str) {
             console.log(
                 Chalk.white.bgGreen(
-                    str
+                    `[${moment().format('LTS')}] ${str}`
                 )
             );
         },
@@ -93,12 +97,12 @@ var fn = {
             title:              ultimirror.sys.name + ' ' + ultimirror.sys.version
         });
 
-        // load the specified URL, otherwise the local mirror / config HTML file
+        // load the specified URL, otherwise the local mirror / settings HTML file
         win.loadURL(
             'http://localhost:' + ultimirror.config.port + '/' + (
-                (ultimirror.config.config ?
-                    ('admin' + '.html') :
-                    ('mirror' + '.html')
+                (ultimirror.config.settings ?
+                    ('admin.html') :
+                    ('mirror.html')
                 )
             ) + '?context=electron'
         );
@@ -179,7 +183,7 @@ var fn = {
                     // // TODO: make this switch based on config values
                     // ultimirror.fn.update(
                     //     ['layout', 'mirror'],
-                    //     (ultimirror.layout.mirror === 'bigclock') ? 'default' : 'bigclock'
+                    //     (ultimirror.base.layout.mirror === 'bigclock') ? 'default' : 'bigclock'
                     // );
 
                 },

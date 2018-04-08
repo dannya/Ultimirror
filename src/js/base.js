@@ -7,6 +7,17 @@ var Ultimirror = angular.module('Ultimirror', ['ngSanitize', 'ngAnimate', 'angul
 
 // define directives
 angular.module('Ultimirror')
+    .directive('fadeIn', function () {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, attr) {
+                $element.addClass('ng-hide-remove');
+                $element.on('load', function () {
+                    $element.addClass('ng-hide-add');
+                });
+            }
+        };
+    })
     .directive('onFinishRender', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
@@ -27,7 +38,7 @@ angular.module('Ultimirror')
             link: function ($scope, element, attr) {
                 // watch for changes to layout variable, and load new layout when it changes
                 $scope.$watch(
-                    'ultimirror.layout',
+                    'ultimirror.base.layout',
                     function (layout) {
                         if (!layout) {
                             return;

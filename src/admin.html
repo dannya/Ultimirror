@@ -29,14 +29,14 @@
                 {{ ultimirror.sys.name }}
             </span>
 
-            <nav ng-if="ultimirror.layout && (ultimirror.layout.admin == 'admin/admin')" class="animate lightSpeedInOutHoriz">
+            <nav ng-if="ultimirror.base.layout && (ultimirror.base.layout.admin == 'admin/admin')" class="animate lightSpeedInOutHoriz">
                 <module type="actions"></module>
             </nav>
 
-            <nav ng-if="ultimirror.layout && (ultimirror.layout.admin != 'admin/admin')" class="animate lightSpeedInOutHoriz">
+            <nav ng-if="ultimirror.base.layout && (ultimirror.base.layout.admin != 'admin/admin')" class="animate lightSpeedInOutHoriz">
                 <ul>
-                    <li ng-if="ultimirror.layout.mirror != ultimirror.layout.admin">
-                        <button ng-click="changeCurrentlyDisplaying(ultimirror.layout.admin)" href="#" class="changeCurrentlyDisplaying">
+                    <li ng-if="ultimirror.base.layout.mirror != ultimirror.base.layout.admin">
+                        <button ng-click="changeCurrentlyDisplaying(ultimirror.base.layout.admin)" href="#" class="changeCurrentlyDisplaying">
                             Show on mirror now
                         </button>
                     </li>

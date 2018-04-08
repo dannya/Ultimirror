@@ -2,10 +2,10 @@ angular.module('Ultimirror')
     .controller('DateTimeCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
 
         // set up clock
-        console.log($scope.moduleKey);
-        console.log($scope.ultimirror.moduleInstances[$scope.moduleKey]);
-        console.log($scope.ultimirror.moduleInstances[$scope.moduleKey].config);
-        console.log($scope.ultimirror.moduleInstances[$scope.moduleKey].config.theme);
+        // console.log($scope.moduleKey);
+        // console.log($scope.ultimirror.moduleInstances[$scope.moduleKey]);
+        // console.log($scope.ultimirror.moduleInstances[$scope.moduleKey].config);
+        // console.log($scope.ultimirror.moduleInstances[$scope.moduleKey].config.theme);
 
         // set up a theme-specific clock?
         if ($scope.ultimirror.moduleInstances[$scope.moduleKey].config.theme === 'analog') {
@@ -141,14 +141,11 @@ angular.module('Ultimirror')
                 // More tricky, this needs to move the minute hand when the second hand hits zero
                 var containers = document.querySelectorAll('.minutes-container');
 
-                console.log(containers);
                 var secondAngle = containers[containers.length - 1].getAttribute('data-second-angle');
-                console.log(secondAngle);
 
                 if (secondAngle > 0) {
                     // Set a timeout until the end of the current minute, to move the hand
                     var delay = (((360 - secondAngle) / 6) + 0.1) * 1000;
-                    console.log(delay);
                     setTimeout(function() {
                         moveMinuteHands(containers);
                     }, delay);
