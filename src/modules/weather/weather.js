@@ -44,7 +44,7 @@ const Weather = UltimirrorModule.extend('Weather', {
         {
             "id":       "apiKey",
             "name":     "OpenWeatherMap API key",
-            "initial":  "41a4c2a6b97a096c0502d39a1326e028",
+            "initial":  "",
             "note":     "Go to TODO to get an API key for this service."
         },
         {
@@ -80,7 +80,7 @@ const Weather = UltimirrorModule.extend('Weather', {
                         if (response.statusCode === 200) {
                             var weatherData = JSON.parse(body);
 
-                            // process current forecase data
+                            // process current forecast data
                             var current = self._extractWeather(
                                 weatherData.list[0]
                             );
