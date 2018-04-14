@@ -147,8 +147,9 @@ const System = UltimirrorModule.extend('System', {
                 // show system IP address on the console the first time the app is loaded
                 if (!self.dataLoaded) {
                     ultimirror.fn.log.info(
-                        'Configure this mirror @ http://' + ip_display + '\n' +
-                        'View this mirror @ http://' + ip_display + '/mirror\n'
+                        '\n' +
+                        `Configure this mirror @ http://${ip_display}\n` +
+                        `View this mirror @ http://${ip_display}/mirror`
                     );
                 }
 

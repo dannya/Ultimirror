@@ -19,6 +19,13 @@ var _autoChangeInterval;
 // exported functions
 var fn = {
     log: {
+        title: function (str) {
+            console.info(
+                Chalk.black.bgWhite(
+                    str
+                )
+            );
+        },
         info: function (str) {
             console.info(
                 Chalk.white.bgBlue(

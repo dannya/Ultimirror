@@ -17,6 +17,8 @@ const Weather = UltimirrorModule.extend('Weather', {
     moduleType: 'weather',
     moduleName: 'Weather',
 
+    hasConfig:  true,
+
     update:     (60 * 15),
 
     defaultConfig: [
@@ -64,7 +66,7 @@ const Weather = UltimirrorModule.extend('Weather', {
         var self = this;
 
         // show loading spinner
-        self.loading(true);
+        self.setLoading(true);
 
         // initialise request counter
         var numRequests = 0;
@@ -101,7 +103,7 @@ const Weather = UltimirrorModule.extend('Weather', {
                             }
 
                             // hide loading spinner
-                            self.loading(false);
+                            self.setLoading(false);
 
                             // trigger success callback
                             ultimirror.fn.log.success(
@@ -134,7 +136,7 @@ const Weather = UltimirrorModule.extend('Weather', {
                                 console.error('-- too many ' + self.moduleType + ' attempts');
 
                                 // hide loading spinner
-                                self.loading(false);
+                                self.setLoading(false);
 
                                 // trigger error callback
                                 error(err);
@@ -144,9 +146,10 @@ const Weather = UltimirrorModule.extend('Weather', {
                             // - unknown response code
                             console.error(response.statusCode);
                             console.error(err);
+                            console.log('2]]');
 
                             // hide loading spinner
-                            self.loading(false);
+                            self.setLoading(false);
 
                             // trigger error callback
                             error(err);
@@ -154,9 +157,10 @@ const Weather = UltimirrorModule.extend('Weather', {
 
                     } else {
                         // - unknown error
+                        console.log('2++');
 
                         // hide loading spinner
-                        self.loading(false);
+                        self.setLoading(false);
 
                         // trigger error callback
                         error(err);

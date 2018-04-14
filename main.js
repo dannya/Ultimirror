@@ -135,7 +135,7 @@ const staticConfigOptions = {
     },
     port: {
         abbr:       'p',
-        default:    80,
+        default:    8080,
         help:       'Local port number that interface is served from'
     }
 };
@@ -187,16 +187,19 @@ try {
         );
     }
 
-    ultimirror.config = yaml.safeLoad(
+    let configData = yaml.safeLoad(
         fs.readFileSync(
             configFile,
             'utf8'
         )
-    ).config;
+    );
+
+    ultimirror.config = configData.config;
+    ultimirror.moduleConfig = configData.moduleConfig;
 
 } catch (e) {
     ultimirror.fn.log.error(
-        `Could not load ${configFile}.config`
+        `Could not load ${configFile}`
     );
 
     process.exit(1);
@@ -476,7 +479,7 @@ ChalkAnimation.rainbow(
 // warn if no window will be opened
 if (!ultimirror.config.showWindow) {
     ultimirror.fn.log.info(
-        '!! Note: Ultimirror window is disabled in the config, visit the URL below to operate !!' + '\n'
+        '!! Note: Ultimirror window is disabled in the config, visit the URL below to operate !!'
     );
 }
 

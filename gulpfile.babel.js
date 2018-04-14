@@ -6,8 +6,11 @@ import jeet from 'jeet';
 import YAWN from 'yawn-yaml/cjs';
 import es from 'event-stream';
 import fs from 'fs';
+import Chalk from 'chalk';
 
 import gulpLoadPlugins from 'gulp-load-plugins';
+
+import { default as uglify } from 'gulp-uglify-es';
 
 
 const $ = gulpLoadPlugins();
@@ -60,7 +63,7 @@ function mergeDeep(target, ...sources) {
 
 
 // stream functions
-function mergeYamlConfig() {
+let mergeYamlConfig = function () {
     function transform(file, cb) {
         var filename = file.path.replace(file.base, '');
 
@@ -97,6 +100,104 @@ function mergeYamlConfig() {
 
     return es.map(transform);
 }
+
+
+let merge_module_config = function (moduleName, moduleConfigStr, configFileName) {
+    // load modifiable YAML representations of config files
+    var moduleConfig = new YAWN(
+        moduleConfigStr
+    );
+    var fullConfig = new YAWN(
+        fs.readFileSync(
+            path.join(__dirname, 'app', 'config', configFileName),
+            'utf8'
+        )
+    );
+
+
+    //
+    if ((typeof fullConfig.json.moduleConfig !== 'object') || (typeof fullConfig.json.moduleConfig[moduleName] !== 'object')) {
+        console.log(
+            Chalk.white.bgRed(
+                `- "${moduleName}" config doesn't exist in ${configFileName}`
+            )
+        );
+
+        // ensure we have the root level moduleConfig structure
+        if (typeof fullConfig.json.moduleConfig !== 'object') {
+            fullConfig.yaml += '\n\nmoduleConfig:\n';
+        } else {
+            fullConfig.yaml += '\n\n';
+        }
+
+        // prepend MODULENAME YAML structure
+        moduleConfig.yaml = `  ${moduleName}:\n    ` + moduleConfig.yaml.replace(/\n/g, '\n    ');
+
+        // append new moduleConfig to the end of the full config file
+        fullConfig.yaml += moduleConfig.yaml;
+
+    } else {
+        console.log(
+            Chalk.white.bgGreen(
+                `- "${moduleName}" config already exists in ${configFileName}`
+            )
+        );
+
+        // prepend full moduleConfig/MODULENAME YAML structure
+        moduleConfig.yaml = `moduleConfig:\n  ${moduleName}:\n    ` + moduleConfig.yaml.replace(/\n/g, '\n    ');
+
+        // merge the config files
+        fullConfig.json = mergeDeep(
+            moduleConfig.json,
+            fullConfig.json
+        );
+    }
+
+
+    return fullConfig.yaml;
+};
+
+
+let install_module = function (moduleName) {
+    console.log(
+        Chalk.white.bgBlue(
+            `Installing "${moduleName}" module...`
+        )
+    );
+
+
+    // attempt to load the module config
+    let moduleConfigStr;
+
+    try {
+        moduleConfigStr = fs.readFileSync(
+            path.join(__dirname, 'src', 'modules', moduleName, `${moduleName}.config`),
+            'utf8'
+        );
+
+    } catch (e) {
+        // some modules do not have a config file
+        return;
+    }
+
+
+    // merge module config into each existing full config file...
+    fs
+        .readdirSync(path.join(__dirname, 'app', 'config'))
+            .forEach(
+                function (configFileName) {
+                    // merge and write new config file
+                    fs.writeFileSync(
+                        path.join(__dirname, 'app', 'config', configFileName),
+                        merge_module_config(
+                            moduleName,
+                            moduleConfigStr,
+                            configFileName
+                        )
+                    )
+                }
+            );
+};
 
 
 
@@ -169,7 +270,7 @@ gulp.task('scripts_mirror', function () {
         .pipe($.concat('mirror.js'))
         .pipe(
             $.if(
-                !isDevelopment, $.uglify()
+                !isDevelopment, uglify()
             )
         )
         .pipe(gulp.dest('app/js'));
@@ -185,7 +286,7 @@ gulp.task('scripts_admin', function () {
         .pipe($.concat('admin.js'))
         .pipe(
             $.if(
-                !isDevelopment, $.uglify()
+                !isDevelopment, uglify()
             )
         )
         .pipe(gulp.dest('app/js'));
@@ -200,7 +301,7 @@ gulp.task('scripts_ondemand', function () {
         ])
         .pipe(
             $.if(
-                !isDevelopment, $.uglify()
+                !isDevelopment, uglify()
             )
         )
         .pipe(gulp.dest('app/js'));
@@ -214,9 +315,12 @@ gulp.task('scripts_ultimirror', function () {
         ])
         .pipe(
             $.if(
-                !isDevelopment, $.uglify()
+                !isDevelopment, uglify()
             )
         )
+        .on('error', function(error) {
+          console.log(error);
+        })
         .pipe(gulp.dest('app/js/ultimirror'));
 });
 
@@ -228,7 +332,7 @@ gulp.task('scripts_modules', function () {
         ])
         .pipe(
             $.if(
-                !isDevelopment, $.uglify()
+                !isDevelopment, uglify()
             )
         )
         .pipe(gulp.dest('app/modules'));
@@ -241,6 +345,7 @@ gulp.task('transfer_config', function () {
         .src([
             'src/config/**',
         ])
+        .pipe(gulp.dest('app/config'))
         .pipe(mergeYamlConfig())
         .pipe(gulp.dest('app/config'));
 });
@@ -273,7 +378,6 @@ gulp.task('transfer_pages', function () {
 });
 
 
-
 gulp.task('transfer_layouts', function () {
     // copy layout HTML files
     return gulp
@@ -291,7 +395,7 @@ gulp.task('transfer_templates', function () {
 
 
 gulp.task('transfer_fonts', function () {
-    // optimise images
+    // copy fonts
     gulp
         .src('src/fonts/**')
         .pipe($.newer('app/fonts'))
@@ -299,14 +403,7 @@ gulp.task('transfer_fonts', function () {
 });
 
 
-gulp.task('images', function () {
-    // optimise images
-    gulp
-        .src('src/img/**')
-        .pipe($.newer('app/img'))
-        .pipe($.imagemin({ progressive: true }))
-        .pipe(gulp.dest('app/img'));
-
+gulp.task('transfer_favicon', function () {
     // copy favicon
     gulp
         .src('src/favicon.ico')
@@ -314,8 +411,18 @@ gulp.task('images', function () {
 });
 
 
+gulp.task('images', function () {
+    // optimise and copy images
+    gulp
+        .src('src/img/**')
+        .pipe($.newer('app/img'))
+        .pipe($.imagemin({ progressive: true }))
+        .pipe(gulp.dest('app/img'));
+});
+
+
 gulp.task('images_modules', function () {
-    // optimise images
+    // optimise module images
     gulp
         .src('src/modules/**/img/*')
         .pipe($.newer('app/modules'))
@@ -326,26 +433,49 @@ gulp.task('images_modules', function () {
 
 
 
+gulp.task('install_module', function (done) {
+    // attempt to install a module specified on the command line
+    // (gulp install_module --module photos)
+    install_module(argv.module);
+
+    done();
+});
+
+
+gulp.task('install_modules', function (done) {
+    // for every module, attempt to install it...
+    fs.readdirSync(path.join(__dirname, 'src', 'modules'))
+        .forEach(
+            function (moduleName) {
+                install_module(moduleName);
+            }
+        );
+
+    done();
+});
+
+
+
+
 // define workflow tasks
 gulp.task(
     'default',
     [
-        'styles_mirror',
-        'styles_admin',
-        'styles_modules',
-        'scripts_mirror',
-        'scripts_admin',
-        'scripts_ondemand',
-        'scripts_ultimirror',
-        'scripts_modules',
-        'transfer_config',
-        'transfer_modules',
-        'transfer_pages',
-        'transfer_layouts',
-        'transfer_templates',
-        'transfer_fonts',
+        'styles',
+        'scripts',
+        'transfer',
         'images_modules',
         'images'
+    ]
+);
+
+
+gulp.task(
+    'styles',
+    [
+        'styles_mirror',
+        'styles_admin',
+        'styles_modules'
     ]
 );
 
@@ -358,6 +488,20 @@ gulp.task(
         'scripts_ondemand',
         'scripts_ultimirror',
         'scripts_modules'
+    ]
+);
+
+
+gulp.task(
+    'transfer',
+    [
+        'transfer_config',
+        'transfer_modules',
+        'transfer_pages',
+        'transfer_layouts',
+        'transfer_templates',
+        'transfer_fonts',
+        'transfer_favicon',
     ]
 );
 
@@ -383,6 +527,7 @@ gulp.task(
         runSequence(
             'clean',
             'default',
+            'install_modules',
             callback
         );
     }

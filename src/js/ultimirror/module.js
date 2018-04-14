@@ -22,6 +22,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
     moduleId:       'default',
     showLoading:    false,
 
+    hasConfig:      false,
     configLoaded:   false,
     dataLoaded:     false,
 
@@ -36,7 +37,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
         this.data = {};
     },
 
-    loading: function (isLoading) {
+    setLoading: function (isLoading) {
         // set instance loading flag
         this.showLoading = isLoading;
 
@@ -167,6 +168,13 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
     _loadConfig: function () {
         var self = this;
 
+        if (self.moduleType !== 'system') {
+            ultimirror.fn.log.title(
+                `\n${self.moduleType}:`
+            );
+        }
+
+
         return new Promise(
             function (success, error) {
 
@@ -174,16 +182,7 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                 try {
                     // ...config file exists, so it takes precedence
                     self._config = self._processConfig(
-                        yaml.safeLoad(
-                            fs.readFileSync(
-                                ultimirror.path(
-                                    [
-                                        'modules', self.moduleType, (self.moduleType + '.config')
-                                    ]
-                                ),
-                                'utf8'
-                            )
-                        )
+                        ultimirror.moduleConfig[self.moduleType]
                     );
 
                     // check if we have instance-specific config data
@@ -198,9 +197,9 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
                     }
 
                 } catch (err) {
-                    if (ultimirror.config.debug) {
+                    if (ultimirror.config.debug && self.hasConfig) {
                         ultimirror.fn.log.error(
-                            `- could not load config file for "${self.moduleType}" module`
+                            `- Could not load config file for "${self.moduleType}" module`
                         );
                     }
 
@@ -256,7 +255,11 @@ const UltimirrorModule = Class.extend('UltimirrorModule', {
     },
 
     _saveConfig: function () {
-        console.log('--save--');
+        console.log(
+            '--save-- not implemented'
+        );
+
+        return;
 
         // load in existing config file, so that we don't wipe out the config of other instances
         var idConfig;

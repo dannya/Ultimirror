@@ -115,7 +115,7 @@ const Quotes = UltimirrorModule.extend('Quotes', {
         var self = this;
 
         // show loading spinner
-        self.loading(true);
+        self.setLoading(true);
 
         // initialise request counter
         var numRequests = 0;
@@ -143,7 +143,7 @@ const Quotes = UltimirrorModule.extend('Quotes', {
                             );
 
                             // hide loading spinner
-                            self.loading(false);
+                            self.setLoading(false);
 
                             // trigger success callback
                             ultimirror.fn.log.success(
@@ -174,7 +174,7 @@ const Quotes = UltimirrorModule.extend('Quotes', {
                                 console.error('-- too many ' + self.moduleType + ' attempts');
 
                                 // hide loading spinner
-                                self.loading(false);
+                                self.setLoading(false);
 
                                 // trigger error callback
                                 error(err);
@@ -186,7 +186,7 @@ const Quotes = UltimirrorModule.extend('Quotes', {
                             console.error(err);
 
                             // hide loading spinner
-                            self.loading(false);
+                            self.setLoading(false);
 
                             // trigger error callback
                             error(err);
@@ -196,7 +196,7 @@ const Quotes = UltimirrorModule.extend('Quotes', {
                         // - unknown error
 
                         // hide loading spinner
-                        self.loading(false);
+                        self.setLoading(false);
 
                         // trigger error callback
                         error(error);
